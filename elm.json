@@ -3,7 +3,7 @@
     "name": "lauber00/elm-int64",
     "summary": "Efficient 64-bit (unsigned) integer",
     "license": "BSD-3-Clause",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "exposed-modules": [
         "Int64"
     ],

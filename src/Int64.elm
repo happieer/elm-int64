@@ -6,6 +6,7 @@ module Int64 exposing
     , signedCompare, unsignedCompare
     , toSignedString, toUnsignedString
     , toHex, toBitString
+    , decoder, encoder
     , toByteValues, toBits
     , toInt
     )
@@ -43,6 +44,7 @@ This is a low-level package focussed on speed. The 64-bit integers are represent
 
 ## Conversion to Bytes
 
+@docs decoder, encoder
 @docs toByteValues, toBits
 
 
@@ -597,6 +599,44 @@ toHex ( higher, lower ) =
                 |> String.padLeft 8 '0'
     in
     high ++ low
+
+
+
+-- Bytes
+
+
+{-| A `elm/bytes` Decoder for `Int64`
+-}
+decoder : Endianness -> Decoder Int64
+decoder endianness =
+    case endianness of
+        BE ->
+            Decode.map2 (\higher lower -> ( higher, lower ))
+                (Decode.unsignedInt32 BE)
+                (Decode.unsignedInt32 BE)
+
+        LE ->
+            Decode.map2 (\lower higher -> ( higher, lower ))
+                (Decode.unsignedInt32 LE)
+                (Decode.unsignedInt32 LE)
+
+
+{-| A `elm/bytes` Encoder for `Int64`
+-}
+encoder : Endianness -> Int64 -> Encoder
+encoder endianness ( higher, lower ) =
+    case endianness of
+        BE ->
+            Encode.sequence
+                [ Encode.unsignedInt32 BE higher
+                , Encode.unsignedInt32 BE lower
+                ]
+
+        LE ->
+            Encode.sequence
+                [ Encode.unsignedInt32 LE lower
+                , Encode.unsignedInt32 LE higher
+                ]
 
 
 {-| Convert an `Int64` to its 8 byte values in big-endian order
