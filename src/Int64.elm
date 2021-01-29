@@ -106,7 +106,7 @@ fromInt raw =
         )
 
     else if raw > 0xFFFFFFFF then
-        ( raw - Bitwise.shiftRightZfBy 0 raw - 0xFFFFFFFF, Bitwise.shiftRightZfBy 0 raw )
+        ( raw // 2 ^ 32, Bitwise.shiftRightZfBy 0 raw )
 
     else
         ( 0, raw )
