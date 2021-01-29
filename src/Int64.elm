@@ -8,6 +8,7 @@ module Int64 exposing
     , toHex, toBitString
     , decoder, encoder
     , toByteValues, toBits
+    , fromZigZag, toZigZag
     , toInt
     )
 
@@ -46,6 +47,11 @@ This is a low-level package focussed on speed. The 64-bit integers are represent
 
 @docs decoder, encoder
 @docs toByteValues, toBits
+
+
+## ZigZag
+
+@docs fromZigZag, toZigZag
 
 
 ## Conversion to Int
@@ -685,3 +691,29 @@ bits32Help n remaining accum =
 
     else
         accum
+
+
+{-| Convert an `Int64` to a new `Int64` with zigZag algorithm
+
+    toZigZag (0, 10)
+        --> (0, 20)
+
+-}
+toZigZag : Int64 -> Int64
+toZigZag ( upper, lower ) =
+    ( Bitwise.xor (Bitwise.shiftRightBy 31 upper) (Bitwise.shiftLeftBy 1 upper)
+    , Bitwise.xor (Bitwise.shiftRightBy 31 lower) (Bitwise.shiftLeftBy 1 lower)
+    )
+
+
+{-| Convert an `Int64` with zigZag algorithm to its original `Int64` value
+
+    fromZigZag (0, 20)
+        --> (0, 10)
+
+-}
+fromZigZag : Int64 -> Int64
+fromZigZag ( upper, lower ) =
+    ( Bitwise.xor (Bitwise.shiftRightZfBy 1 upper) (-1 * Bitwise.and 1 upper)
+    , Bitwise.xor (Bitwise.shiftRightZfBy 1 lower) (-1 * Bitwise.and 1 lower)
+    )
