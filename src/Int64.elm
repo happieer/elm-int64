@@ -85,6 +85,10 @@ type alias Int64 =
 -}
 fromInt : Int -> Int64
 fromInt raw =
+    let
+        _ =
+            Debug.log "debug in Int64, raw" raw
+    in
     ( raw // 2 ^ 32, Bitwise.shiftRightZfBy 0 raw )
     {-if raw < 0 then
         let
