@@ -85,7 +85,8 @@ type alias Int64 =
 -}
 fromInt : Int -> Int64
 fromInt raw =
-    if raw < 0 then
+    ( raw // 2 ^ 32, Bitwise.shiftRightZfBy 0 raw )
+    {-if raw < 0 then
         let
             lower =
                 raw
@@ -109,7 +110,7 @@ fromInt raw =
         ( raw // 2 ^ 32, Bitwise.shiftRightZfBy 0 raw )
 
     else
-        ( 0, raw )
+        ( 0, raw )-}
 
 
 {-| Give an Int64 var, corresponding to Int var
